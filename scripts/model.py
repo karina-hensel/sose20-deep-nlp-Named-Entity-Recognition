@@ -8,7 +8,7 @@ Created on Tue Aug  4 18:02:19 2020
 
 @author: karina
 """
-
+import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.nn import Module, Embedding, LSTM, Linear, NLLLoss, Dropout, CrossEntropyLoss
@@ -27,9 +27,10 @@ from utils import *
 
 # Data and hyperparameters
 #embeddings_file = '../Data/embeddings/en/glove.6B.100d.bin'
-embeddings_file = '../Data/embeddings/en/GoogleNews-pruned2tweets.txt'
-data_dir = '../Data/conll2003/en/'
-model_dir = ''
+
+embeddings_file = '../data/embeddings/en/GoogleNews-pruned2tweets.txt'
+data_dir = '../data/conll2003/en/'
+model_dir = '../models/'
 
 def prepare_emb(sent, tags, words_to_ix, tags_to_ix):
     w_idxs, tag_idxs = [], []
@@ -108,7 +109,7 @@ if __name__=='__main__':
     # Training loop
     for e in range(n_epochs+1):
         total_loss = 0
-        for sent in data["train"][5:100]:
+        for sent in data["train"][5:10]:
             
             # (1) Set gradient to zero for new example: Set gradients to zero before pass
             model.zero_grad()
@@ -127,12 +128,16 @@ if __name__=='__main__':
                 # (5) Optimize parameter values
                 optimizer.step()
           
-            # (6) Accumulate loss
-            total_loss += loss
+                # (6) Accumulate loss
+                total_loss += loss
         if ((e+1) % report_every) == 0:
             print('epoch: %d, loss: %.4f' % (e, total_loss*100/len(data['train'])))
-
-    #--- test ---
+            
+    # Save the trained model
+    save_model(model, model_dir + 'm1.pkl')
+    
+    # Load model from file
+    load_model(model_dir + 'm1.pkl')
     '''correct = 0
     with torch.no_grad():
       for sent in data["test"]:
