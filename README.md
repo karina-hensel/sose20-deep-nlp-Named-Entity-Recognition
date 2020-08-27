@@ -4,3 +4,6 @@ This semester project implements a Bidirectional LSTM tagger for named entity re
 
 
 Due to the large size of the model files, a notebook to verify the results is provided on Kaggle under the following link: www.kaggle.com/dataset/464386cc8fd221bca928180717c20127aad3eafa75251066ed1ab9aea2e225e1
+
+To start model training please run the following command:
+train.py --PATH-TO-EMBEDDINGS-FILE --PATH-TO-CONLL-DATASET --NUMBER-EPOCHS --DROPOUT-RATE --MODEL-FILE-NAME
