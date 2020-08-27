@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 
-Train a BiLSTM for NER (work in progress)
+Train a word-based BiLSTM for NER
 
 Created on Fri Aug 21 23:42:55 2020
 
@@ -24,38 +24,53 @@ from gensim.scripts.glove2word2vec import glove2word2vec
 import numpy as np
 import os
 import math
-from model.utils import *
-from model.model import Model
-
-# Data and hyperparameters
-#embeddings_file = '../Data/embeddings/en/glove.6B.100d.bin'
-#cwd = os.path.dirname(os.getcwd() + '/..')
-embeddings_file = '../data/embeddings/en/GoogleNews-pruned2tweets.txt'
-data_dir = '../data/conll2003/en/'
-model_dir = '../model/'
-model = 'm1.pkl'
+import argparse
+from utils import *
+from word_model import WordModel, prepare_emb
 
 if __name__=='__main__':
+    # Set up to parse command line arguments
+    parser = argparse.ArgumentParser(description='Train a word-based BiLSTM for NER')
+    
+    parser.add_argument('Embedding', metavar='EMB_FILE', type=str,
+                   help='Path to word embedding file')
+    parser.add_argument('Data_file', metavar='DATA_FILE', type=str,
+                   help='Path to CONLL data set')
+    parser.add_argument('Number_epochs', metavar='E', type=int,
+                   help='Number of epochs')
+    parser.add_argument('Dropout_rate', metavar='DROP', type=float,
+                   help='Dropout rate')
+    parser.add_argument('Model_file', metavar='MODEL_FILE', type=str,
+                   help='Name of the file to save the trained model')
+    
+    args = parser.parse_args()
+    
+    # Check that correct number of arguments was given
+   
+        
+    EMB_FILE = str(args.Embedding)
+    DATA_DIR = str(args.Data_file)
+    EPOCHS = int(args.Number_epochs)
+    DROPOUT = args.Dropout_rate
+    MODEL_FILE = str(args.Model_file)
+    
     # Load data
-    data = read_conll_datasets(data_dir)
-    gensim_embeds = gensim.models.KeyedVectors.load_word2vec_format(embeddings_file, encoding='utf8')
+    data = read_conll_datasets(DATA_DIR)
+    gensim_embeds = gensim.models.KeyedVectors.load_word2vec_format(EMB_FILE, encoding='utf8')
     pretrained_embeds = gensim_embeds.vectors 
     
-    # To convert words in the input to indices of the embeddings matrix:
+    # To convert words in the input to indices of the embeddings matrix
     word_to_idx = {word: i for i, word in enumerate(gensim_embeds.vocab.keys())}
     
-    # Hyperparameters
+    # Set hyperparameters
     # Number of output classes (9)
     n_classes = len(TAG_INDICES)
-    # Epochs
-    n_epochs = 1
-    # Batch size (currently not used)
-    batch_size = 32
+    n_epochs = EPOCHS
+    p = DROPOUT
     report_every = 1
-    verbose = True
     
     # Set up and initialize model
-    model = Model(pretrained_embeds, 100, len(word_to_idx), n_classes)
+    model = WordModel(pretrained_embeds, 100, len(word_to_idx), n_classes, p)
     loss_function = NLLLoss()
     optimizer = optim.SGD(model.parameters(), lr=0.1, momentum=0.6)
     
@@ -83,8 +98,9 @@ if __name__=='__main__':
           
                 # (6) Accumulate loss
                 total_loss += loss
+                
         if ((e+1) % report_every) == 0:
             print('epoch: %d, loss: %.4f' % (e, total_loss*100/len(data['train'])))
             
     # Save the trained model
-    save_model(model, 'm1.pkl')
+    save_model(model, MODEL_FILE, optimizer, loss_function)
