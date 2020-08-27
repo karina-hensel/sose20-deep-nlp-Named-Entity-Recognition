@@ -1,10 +1,6 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 
 Train a word-based BiLSTM for NER
-
-Created on Fri Aug 21 23:42:55 2020
 
 @author: karina
 """
@@ -14,16 +10,12 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.nn import Module, Embedding, LSTM, Linear, NLLLoss, Dropout, CrossEntropyLoss
 import torch.optim as optim
-from torch.utils.tensorboard import SummaryWriter
-import torchtext
-from torchtext import data
+from sklearn.metrics import f1_score
 
 import gensim
 from gensim.scripts.glove2word2vec import glove2word2vec
 
 import numpy as np
-import os
-import math
 import argparse
 from utils import *
 from word_model import WordModel, prepare_emb
@@ -50,7 +42,7 @@ if __name__=='__main__':
         
     EMB_FILE = str(args.Embedding)
     DATA_DIR = str(args.Data_file)
-    EPOCHS = int(args.Number_epochs)
+    EPOCHS = args.Number_epochs
     DROPOUT = args.Dropout_rate
     MODEL_FILE = str(args.Model_file)
     
@@ -72,7 +64,9 @@ if __name__=='__main__':
     # Set up and initialize model
     model = WordModel(pretrained_embeds, 100, len(word_to_idx), n_classes, p)
     loss_function = NLLLoss()
-    optimizer = optim.SGD(model.parameters(), lr=0.1, momentum=0.6)
+    optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.6)
+    device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
+    model.to(device)
     
     # Training loop
     for e in range(n_epochs+1):
@@ -104,3 +98,5 @@ if __name__=='__main__':
             
     # Save the trained model
     save_model(model, MODEL_FILE, optimizer, loss_function)
+    
+    
