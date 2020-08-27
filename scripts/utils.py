@@ -104,12 +104,21 @@ def read_conll_datasets(data_dir):
     #words = word_char_dicts(data["train"])[0]
     return data#, words
 
-# =========================
-# Test
-#sents = load_sentences('../Data/conll2003/en/test.txt')
-#print(sents)
-#tokens = word_char_dicts(sents)
-#labels = ne_labels_dict(sents)
-#print(labels)  
-#data = read_conll_datasets('../Data/conll2003/en')
-#print(data['train'])
+def save_model(model, name, optimizer, loss):
+    """
+    Print evaluation of saved model
+
+    Parameters
+    ----------
+    model : Model
+        BiLSTM model loaded from file.
+    name : String
+        File name.
+    """
+    torch.save(model, name +'.pt')
+    torch.save(model.state_dict(), name + '_2.pt')
+    torch.save({
+    'model': model.state_dict(),
+    'optimizer': optimizer.state_dict(),
+    'loss': loss.state_dict()
+}, name + '_state_dict.pt')
