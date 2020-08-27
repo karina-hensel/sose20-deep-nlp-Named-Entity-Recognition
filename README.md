@@ -3,7 +3,10 @@
 This semester project implements a Bidirectional LSTM tagger for named entity recognition as described in Lample et al. Neural Architectures for Named Entity Recognition. NAACL-HLT 2016. (without the CRF layer).The results are evaluated on the CoNLL 2003 dataset and compared to the scores presented in the paper.
 
 
-Due to the large size of the model files, a notebook to verify the results is provided on Kaggle under the following link: www.kaggle.com/dataset/464386cc8fd221bca928180717c20127aad3eafa75251066ed1ab9aea2e225e1
+Due to the file size limit on GitHub the trained models can be downloaded from the following Kaggle repository: www.kaggle.com/dataset/464386cc8fd221bca928180717c20127aad3eafa75251066ed1ab9aea2e225e1
 
-To start model training please run the following command:
-train.py --PATH-TO-EMBEDDINGS-FILE --PATH-TO-CONLL-DATASET --NUMBER-EPOCHS --DROPOUT-RATE --MODEL-FILE-NAME
+To verify the results run the training script with the following command (with NUMBER_EPOCHS=50, DROPOUT=0.5) to generate the trained models:
+python3 train.py PATH-TO-EMBEDDINGS-FILE PATH-TO-CONLL-DATASET NUMBER-EPOCHS DROPOUT MODEL-FILE-NAME
+
+Then run the evaluation script:
+python3 evaluate.py PATH-TO-EMBEDDINGS-FILE PATH-TO-CONLL-DATASET MODEL-FILE-NAME
