@@ -1,6 +1,6 @@
 # Named Entity Recognition using a character- and word-based BiLSTM
 
-This semester project implements a Bidirectional LSTM tagger for named entity recognition as described in Lample et al. Neural Architectures for Named Entity Recognition. NAACL-HLT 2016. (without the CRF layer).The results are evaluated on the CoNLL 2003 dataset and compared to the scores presented in the paper.
+This semester project implements a Bidirectional LSTM tagger (without the CRF layer) for named entity recognition as described in 'Lample et al. Neural Architectures for Named Entity Recognition. NAACL-HLT 2016.'. The results are evaluated on the CoNLL 2003 dataset and compared to the scores presented in the paper.
 
 
 Due to the file size limit on GitHub the trained models can be downloaded from the following Kaggle repository: https://www.kaggle.com/karinahensel/ner-trainedlstms
