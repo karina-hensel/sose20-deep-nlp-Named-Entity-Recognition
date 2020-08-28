@@ -71,7 +71,7 @@ if __name__=='__main__':
     # Training loop
     for e in range(n_epochs+1):
         total_loss = 0
-        for sent in data["train"][5:10]:
+        for sent in data["train"]:
             
             # (1) Set gradient to zero for new example: Set gradients to zero before pass
             model.zero_grad()
