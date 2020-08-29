@@ -47,7 +47,7 @@ def prepare_emb(sent, tags, words_to_ix, tags_to_ix):
             w_idxs.append(words_to_ix[w.lower()])
         else:
             # Map unknown words to the reserved embeddig vector
-            w_idxs.append(words_to_ix['frock'])
+            w_idxs.append(words_to_ix['unk'])
                                       
         if t in tags_to_ix.keys():
             tag_idxs.append(tags_to_ix[t])
